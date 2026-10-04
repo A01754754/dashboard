@@ -52,7 +52,7 @@ export function AppLayout() {
       <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(ellipse_at_center,transparent_55%,rgb(11_14_19/0.55))]" />
 
       {!graph.data && (
-        <div className="absolute inset-0 grid place-items-center bg-[radial-gradient(circle_at_center,var(--color-panel),var(--color-bg)_70%)] text-sm text-ink-muted">
+        <div className="dots absolute inset-0 grid place-items-center bg-bg text-sm text-ink-muted">
           {graph.isPending ? (
             <div className="flex flex-col items-center gap-3">
               <Loader2 size={28} className="animate-spin text-accent" />

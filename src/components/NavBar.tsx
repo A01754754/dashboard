@@ -32,24 +32,26 @@ export function NavBar() {
   }
 
   return (
-    <header className="glass w-[22rem] max-w-[calc(100vw-2rem)] animate-fade-in">
+    <header className="glass brand-line w-[22rem] max-w-[calc(100vw-2rem)] animate-fade-in">
       <div className="flex items-center gap-3 px-4 pt-4 pb-3">
+        <span className="grid size-11 shrink-0 place-items-center rounded-xl bg-[#6f3d1f] text-[#f3e4cf] shadow-[0_4px_14px_-4px_rgb(111_61_31/0.6)]">
+          <CoffeeBeanMark size={30} cut="#6f3d1f" />
+        </span>
+        <div className="min-w-0 flex-1">
+          <h1 className="heading truncate text-[1.05rem] leading-tight">Coffee plot network</h1>
+          <p className="mt-0.5 font-mono text-[0.6875rem] text-ink-muted">Leaf rust · central Veracruz</p>
+        </div>
         <Link
           to="/"
-          title="Go to home"
-          aria-label="Go to home"
-          className="grid size-12 shrink-0 place-items-center rounded-xl bg-[#6f3d1f] text-[#f3e4cf] shadow-[0_4px_14px_-4px_rgb(111_61_31/0.6)] transition-transform hover:-translate-y-0.5"
+          title="Back to home"
+          aria-label="Back to home"
+          className="grid size-8 shrink-0 place-items-center self-start rounded-full border border-line/80 text-ink-muted transition-all hover:-translate-y-0.5 hover:border-accent/40 hover:bg-accent/10 hover:text-accent"
         >
-          <CoffeeBeanMark size={32} cut="#6f3d1f" />
+          <House size={15} />
         </Link>
-        <div className="min-w-0">
-          <h1 className="text-base leading-tight font-semibold">Coffee plot network</h1>
-          <p className="text-xs text-ink-muted">Coffee leaf rust · central Veracruz</p>
-        </div>
       </div>
 
-      <nav aria-label="Sections" className="mx-3 mb-3 grid grid-cols-5 gap-1 rounded-xl border border-line/80 bg-bg/40 p-1">
-        <NavLink to="/" end className={link}><House size={17} />Home</NavLink>
+      <nav aria-label="Sections" className="mx-3 mb-3 grid grid-cols-4 gap-1 rounded-xl border border-line/80 bg-bg/40 p-1">
         <NavLink to="/panel" end className={link}><Map size={17} />Map</NavLink>
         <NavLink to="/panel/alertas" className={link}>
           <span className="relative"><BellRing size={17} /><Count n={pending} tone="medium" /></span>Alerts

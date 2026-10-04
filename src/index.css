@@ -49,17 +49,52 @@ body {
 
 * { scrollbar-width: thin; scrollbar-color: var(--color-line) transparent; }
 
-/* Floating surface over the map: translucent, with blur and shadow. */
+/* Floating surface over the map: translucent, with blur and shadow. Rounder, like the landing cards. */
 @utility glass {
-  @apply rounded-xl border border-line/80 bg-panel/85 shadow-float backdrop-blur-md;
+  @apply rounded-2xl border border-line/80 bg-panel/85 shadow-float backdrop-blur-md;
 }
 
+/* Same voice as the landing eyebrows: mono, wide tracking. */
 @utility section-title {
-  @apply text-[0.6875rem] font-semibold tracking-wider text-ink-muted uppercase;
+  @apply font-mono text-[0.6875rem] font-medium tracking-[0.16em] text-ink-muted uppercase;
+}
+
+/* Display headings in Geist with tight tracking, as on the landing. */
+@utility heading {
+  @apply font-display font-semibold tracking-[-0.02em];
 }
 
 @utility card {
-  @apply rounded-lg border border-line bg-panel-2/50 p-3 transition-colors hover:border-ink-muted/30 hover:bg-panel-2/80;
+  @apply rounded-xl border border-line bg-panel-2/50 p-3 transition-all duration-200 hover:-translate-y-px hover:border-ink-muted/30 hover:bg-panel-2/80 hover:shadow-[0_8px_20px_-12px_rgb(0_0_0/0.7)];
+}
+
+/* Dark version of the landing dot grid. */
+@utility dots {
+  background-image: radial-gradient(rgb(230 237 243 / 0.07) 1px, transparent 1px);
+  background-size: 22px 22px;
+}
+
+/* Hairline in the dashboard's own priority/accent tones, echoing the landing's color glow. */
+@utility brand-line {
+  position: relative;
+  &::before {
+    content: "";
+    position: absolute;
+    inset: 0 1.25rem auto;
+    height: 1px;
+    background: linear-gradient(90deg, transparent, var(--color-prio-medium), var(--color-prio-high), var(--color-accent), transparent);
+    opacity: 0.8;
+  }
+}
+
+/* Direct children enter one after another. */
+@utility stagger {
+  & > * { animation: var(--animate-fade-in) both; }
+  & > *:nth-child(2) { animation-delay: 40ms; }
+  & > *:nth-child(3) { animation-delay: 80ms; }
+  & > *:nth-child(4) { animation-delay: 120ms; }
+  & > *:nth-child(5) { animation-delay: 160ms; }
+  & > *:nth-child(n + 6) { animation-delay: 200ms; }
 }
 
 @utility field {
@@ -70,10 +105,10 @@ body {
   @apply inline-flex items-center justify-center gap-1.5 rounded-md px-3 py-2 text-sm font-medium transition-all disabled:cursor-not-allowed disabled:opacity-60;
 }
 @utility btn-primary {
-  @apply btn bg-accent font-semibold text-accent-ink shadow-[0_0_0_1px_rgb(52_211_153/0.4),0_4px_14px_-4px_rgb(52_211_153/0.5)] hover:brightness-110 active:scale-[0.98];
+  @apply btn rounded-full bg-accent font-semibold text-accent-ink shadow-[0_0_0_1px_rgb(52_211_153/0.4),0_4px_14px_-4px_rgb(52_211_153/0.5)] hover:-translate-y-0.5 hover:brightness-110 active:scale-[0.98];
 }
 @utility btn-ghost {
-  @apply btn border border-line text-ink hover:border-ink-muted/40 hover:bg-panel-2;
+  @apply btn rounded-full border border-line text-ink hover:border-ink-muted/40 hover:bg-panel-2;
 }
 
 @utility plot-link {
