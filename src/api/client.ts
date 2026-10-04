@@ -1,5 +1,5 @@
 import type {
-  Alert, AlertReview, AlertStatus, FollowUp, GraphResponse, Page, ResolvedCase, TimelineEntry,
+  Alert, AlertReview, AlertStatus, ExternalContextResponse, FollowUp, GraphResponse, Page, ResolvedCase, TimelineEntry,
 } from './types'
 
 // Single interface used by every screen. There are two implementations:
@@ -11,6 +11,7 @@ export interface DashboardApi {
   reviewAlert(id: string, body: AlertReview): Promise<Alert>
   getFollowups(): Promise<Page<FollowUp>>
   getResolvedCases(plotId?: string): Promise<Page<ResolvedCase>>
+  getExternalContext(region: string, threatCode: string): Promise<ExternalContextResponse>
   resetDemo(): Promise<void>
 }
 

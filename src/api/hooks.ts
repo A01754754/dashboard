@@ -5,6 +5,7 @@ import type { AlertReview } from './types'
 // The spec allows polling every 5 s; real time is not needed.
 const POLL_MS = 5000
 export const THREAT_CODE = 'coffee_leaf_rust'
+export const REGION = 'central Veracruz'
 
 export const useGraph = () =>
   useQuery({ queryKey: ['graph', THREAT_CODE], queryFn: () => api.getGraph(THREAT_CODE), refetchInterval: POLL_MS })
@@ -25,6 +26,13 @@ export const useFollowups = () =>
 
 export const useResolvedCases = () =>
   useQuery({ queryKey: ['resolved-cases'], queryFn: () => api.getResolvedCases(), refetchInterval: POLL_MS })
+
+export const useExternalContext = () =>
+  useQuery({
+    queryKey: ['external-context', REGION, THREAT_CODE],
+    queryFn: () => api.getExternalContext(REGION, THREAT_CODE),
+    refetchInterval: POLL_MS,
+  })
 
 export function useReviewAlert() {
   const qc = useQueryClient()

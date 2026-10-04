@@ -1,4 +1,4 @@
-import type { Alert, FollowUp, ResolvedCase, TimelineEntry } from '../api/types'
+import type { Alert, ExternalContextItem, FollowUp, ResolvedCase, TimelineEntry } from '../api/types'
 
 // Dashboard fixtures (INSTRUCTIONS.md, section 13). Dates are relative to load time
 // so that "overdue" or "5 min ago" make sense in the demo.
@@ -102,6 +102,35 @@ export function buildMockData() {
     },
   ]
 
+  // Fixtures represent records collected in the background and approved before
+  // they can be surfaced to operators. The browser does not perform scraping.
+  const externalContext: ExternalContextItem[] = [
+    {
+      source_id: 'brightdata_cenicafe_roya',
+      url: 'https://publicaciones.cenicafe.org/index.php/infografias/article/view/2828',
+      title: 'Coffee leaf rust (Hemileia vastatrix): disease management',
+      retrieved_at: ago(60 * 24 * 2), valid_until: inMin(60 * 24 * 180),
+      region: null, data_type: 'management_guide',
+      content: 'Resistant coffee varieties and certified seed are an effective foundation for managing leaf rust. Records are reviewed before they can inform field guidance.',
+    },
+    {
+      source_id: 'brightdata_senasica_roya',
+      url: 'https://www.gob.mx/cms/uploads/attachment/file/466535/24.Ficha_T_cnica_Roya_del_Cafeto_REVISION_UTC.pdf',
+      title: 'SENASICA: Coffee leaf rust technical sheet',
+      retrieved_at: ago(60 * 24 * 4), valid_until: inMin(60 * 24 * 240),
+      region: 'Mexico', data_type: 'technical_sheet',
+      content: 'Coffee leaf rust reduces the photosynthetic area of leaves. Monitoring and symptom confirmation should happen before any guidance is communicated.',
+    },
+    {
+      source_id: 'brightdata_uprm_shade',
+      url: 'https://www.uprm.edu/ecosdelcafe/wp-content/uploads/sites/133/2018/11/USO_DE_SOMBRA_TEMPORERA_O_PERMANENTE.pdf',
+      title: 'University of Puerto Rico: Shade management in coffee',
+      retrieved_at: ago(60 * 24 * 6), valid_until: inMin(60 * 24 * 120),
+      region: null, data_type: 'management_guide',
+      content: 'Regulating shade and maintenance pruning can improve air circulation. Excess shade can favor foliar diseases.',
+    },
+  ]
+
   const timeline: Record<string, TimelineEntry[]> = {
     plot_demo_01: [
       {
@@ -163,5 +192,5 @@ export function buildMockData() {
     ],
   }
 
-  return { alerts, followups, resolved, timeline }
+  return { alerts, followups, resolved, externalContext, timeline }
 }

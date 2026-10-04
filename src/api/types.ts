@@ -49,6 +49,26 @@ export interface GraphResponse {
   edges: GraphEdge[]
 }
 
+// GET /v1/external-context. The backend returns only reviewed, still-valid
+// records; the browser never receives Bright Data credentials.
+export interface ExternalContextItem {
+  source_id: string
+  url: string
+  title: string | null
+  retrieved_at: string
+  valid_until: string | null
+  region: string | null
+  data_type: string | null
+  content: string | null
+}
+
+export interface ExternalContextResponse {
+  schema_version: string
+  region: string
+  threat_code: string
+  items: ExternalContextItem[]
+}
+
 // ---------------------------------------------------------------------------
 // Dashboard contracts. The routes are in INSTRUCTIONS.md (section 10), but the
 // exact JSON for alerts, follow-ups, timeline and resolved cases is not defined.

@@ -1,10 +1,11 @@
 import { useState } from 'react'
-import { BellRing, CheckCircle2, House, Map, PhoneCall, RotateCcw, WifiOff } from 'lucide-react'
+import { BellRing, BookOpenText, CheckCircle2, House, Map, PhoneCall, RadioTower, RotateCcw, WifiOff } from 'lucide-react'
 import { Link, NavLink } from 'react-router'
 import { CoffeeBeanMark } from './CoffeeLogo'
-import { useAlerts, useFollowups, useResetDemo } from '../api/hooks'
+import { useAlerts, useExternalContext, useFollowups, useResetDemo } from '../api/hooks'
 import { API_MODE } from '../api'
 import { mockControls } from '../api/mockAdapter'
+import { formatRelative } from '../lib/format'
 
 function Count({ n, tone }: { n: number; tone: 'medium' | 'high' }) {
   if (!n) return null
@@ -15,12 +16,18 @@ function Count({ n, tone }: { n: number; tone: 'medium' | 'high' }) {
 export function NavBar() {
   const alerts = useAlerts()
   const followups = useFollowups()
+  const externalContext = useExternalContext()
   const reset = useResetDemo()
   const [offline, setOffline] = useState(mockControls.isOffline())
 
   const pending = alerts.data?.items.filter((a) => a.status === 'pending_review').length ?? 0
   const overdue =
     followups.data?.items.filter((f) => f.status === 'scheduled' && new Date(f.due_at).getTime() < Date.now()).length ?? 0
+  const brightDataItems = externalContext.data?.items.filter((item) => item.source_id.startsWith('brightdata_')) ?? []
+  const latestBrightData = brightDataItems.reduce<string | null>(
+    (latest, item) => !latest || item.retrieved_at > latest ? item.retrieved_at : latest,
+    null,
+  )
 
   const link = ({ isActive }: { isActive: boolean }) =>
     `relative flex flex-col items-center gap-1 rounded-lg px-1 py-2 text-[0.6875rem] font-medium transition-colors ${
@@ -51,7 +58,7 @@ export function NavBar() {
         </Link>
       </div>
 
-      <nav aria-label="Sections" className="mx-3 mb-3 grid grid-cols-4 gap-1 rounded-xl border border-line/80 bg-bg/40 p-1">
+      <nav aria-label="Sections" className="mx-3 mb-3 grid grid-cols-5 gap-1 rounded-xl border border-line/80 bg-bg/40 p-1">
         <NavLink to="/panel" end className={link}><Map size={17} />Map</NavLink>
         <NavLink to="/panel/alertas" className={link}>
           <span className="relative"><BellRing size={17} /><Count n={pending} tone="medium" /></span>Alerts
@@ -60,7 +67,26 @@ export function NavBar() {
           <span className="relative"><PhoneCall size={17} /><Count n={overdue} tone="high" /></span>Follow-ups
         </NavLink>
         <NavLink to="/panel/casos-resueltos" className={link}><CheckCircle2 size={17} />Resolved</NavLink>
+        <NavLink to="/panel/contexto-externo" className={link}><BookOpenText size={17} />Sources</NavLink>
       </nav>
+
+      <Link
+        to="/panel/contexto-externo"
+        className="mx-3 mb-3 flex items-center gap-2 rounded-lg border border-accent/25 bg-accent/5 px-3 py-2 text-xs transition-colors hover:bg-accent/10"
+      >
+        <span className="grid size-6 shrink-0 place-items-center rounded-md bg-accent/15 text-accent"><RadioTower size={14} /></span>
+        <span className="min-w-0 flex-1">
+          <span className="flex items-center gap-1.5 font-semibold text-accent">Bright Data <span className="size-1.5 rounded-full bg-accent" /></span>
+          <span className="block truncate text-[0.6875rem] text-ink-muted">
+            {externalContext.isPending
+              ? 'Checking reviewed sources…'
+              : brightDataItems.length
+                ? `${brightDataItems.length} reviewed source${brightDataItems.length === 1 ? '' : 's'} · updated ${formatRelative(latestBrightData as string)}`
+                : 'No reviewed Bright Data sources yet'}
+          </span>
+        </span>
+        <BookOpenText size={14} className="shrink-0 text-ink-muted" />
+      </Link>
 
       {API_MODE === 'mock' && (
         <button

@@ -1,5 +1,5 @@
 import { ApiError, type DashboardApi } from './client'
-import type { GraphResponse } from './types'
+import type { ExternalContextResponse, GraphResponse } from './types'
 import graphFixture from '../mocks/graph.json'
 import { buildMockData } from '../mocks/mockData'
 
@@ -76,6 +76,12 @@ export const mockAdapter: DashboardApi = {
 
   getResolvedCases: (plotId) =>
     respond(() => page(plotId ? state.resolved.filter((r) => r.plot_id === plotId) : state.resolved)),
+
+  getExternalContext: (region, threatCode) =>
+    respond((): ExternalContextResponse => ({
+      schema_version: '2.0', region, threat_code: threatCode,
+      items: threatCode === 'coffee_leaf_rust' ? state.externalContext : [],
+    })),
 
   resetDemo: () =>
     respond(() => {

@@ -1,7 +1,7 @@
 import { ALERT_STATUS, FOLLOWUP_STATUS } from '../lib/labels'
 import { ApiError, type DashboardApi } from './client'
 import type {
-  Alert, AlertReview, AlertStatus, ApiErrorBody, DataUsed, FollowUp, FollowUpStatus, GraphResponse, NotificationStatus,
+  Alert, AlertReview, AlertStatus, ApiErrorBody, DataUsed, ExternalContextResponse, FollowUp, FollowUpStatus, GraphResponse, NotificationStatus,
   Page, Recommendation, ResolvedCase, ResolvedMention, TimelineEntry, Verification,
 } from './types'
 
@@ -299,6 +299,8 @@ export const httpAdapter: DashboardApi = {
   getResolvedCases: async (plotId) =>
     page((await request<{ resolutions: ApiResolution[] }>(`/resolved-cases${qs({ plot_id: plotId })}`))
       .resolutions.map(toResolved)),
+  getExternalContext: (region, threatCode) =>
+    request<ExternalContextResponse>(`/external-context${qs({ region, threat_code: threatCode })}`),
   // The backend has no /demo/reset; the button is hidden in http mode (NavBar).
   resetDemo: async () => {
     throw new ApiError(501, 'NOT_IMPLEMENTED', 'Demo reset is not available against the API.')

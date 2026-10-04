@@ -6,6 +6,7 @@ import { AlertsPage } from './pages/AlertsPage'
 import { FollowupsPage } from './pages/FollowupsPage'
 import { PlotPage } from './pages/PlotPage'
 import { ResolvedPage } from './pages/ResolvedPage'
+import { ExternalContextPage } from './pages/ExternalContextPage'
 
 const queryClient = new QueryClient({
   defaultOptions: { queries: { retry: 1, refetchOnWindowFocus: true } },
@@ -22,6 +23,7 @@ function AppRoutes() {
         <Route path="alertas" element={<AlertsPage />} />
         <Route path="seguimientos" element={<FollowupsPage />} />
         <Route path="casos-resueltos" element={<ResolvedPage />} />
+        <Route path="contexto-externo" element={<ExternalContextPage />} />
         <Route path="*" element={<Navigate to="/panel" replace />} />
       </Route>
       <Route path="*" element={<Navigate to="/" replace />} />
