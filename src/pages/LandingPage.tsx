@@ -65,10 +65,62 @@ function useInView<T extends Element>(threshold = 0.2) {
 function Reveal({ children, delay = 0, className = '' }: { children: ReactNode; delay?: number; className?: string }) {
   const [ref, inView] = useInView<HTMLDivElement>(0.15)
   return (
-    <div ref={ref} className={`l-reveal ${inView ? 'is-in' : ''} ${className}`} style={{ transitionDelay: `${delay}ms` }}>
+    <div ref={ref} className={`l-reveal ${inView ? 'is-in' : ''} ${className}`} style={{ transitionDelay: `${delay}ms`, animationDelay: `${delay}ms` }}>
       {children}
     </div>
   )
+}
+
+// --- Section navigation ----------------------------------------------------------------------
+
+const SECTIONS = [
+  { id: 'problema', label: 'The problem' },
+  { id: 'como', label: 'How it works' },
+  { id: 'por-que', label: 'Why AI' },
+  { id: 'confianza', label: 'Trust' },
+]
+
+/** Id of the section crossing the middle of the screen, for the active link in the top bar. */
+function useActiveSection(ids: string[]) {
+  const [active, setActive] = useState<string | null>(null)
+  useEffect(() => {
+    if (!('IntersectionObserver' in window)) return
+    const io = new IntersectionObserver(
+      (entries) => entries.forEach((e) => { if (e.isIntersecting) setActive(e.target.id) }),
+      { rootMargin: '-45% 0px -50% 0px' },
+    )
+    ids.forEach((id) => { const el = document.getElementById(id); if (el) io.observe(el) })
+    return () => io.disconnect()
+  }, [ids])
+  return active
+}
+
+/**
+ * Smooth scroll to a section; when the scroll ends, its content plays the reveal again and a bar sweeps
+ * across the top so it is clear where you landed.
+ */
+function useSectionJump(onArrive: () => void) {
+  const reduced = useReducedMotion()
+  return (e: React.MouseEvent<HTMLAnchorElement>, id: string) => {
+    const el = document.getElementById(id)
+    if (!el) return
+    e.preventDefault()
+    history.replaceState(null, '', `#${id}`)
+    el.classList.remove('l-arrive')
+    let done = false
+    const arrive = () => {
+      if (done) return
+      done = true
+      window.removeEventListener('scrollend', arrive)
+      void el.offsetWidth // restart the animation if the same link is clicked twice
+      el.classList.add('l-arrive')
+      window.setTimeout(() => el.classList.remove('l-arrive'), 1600)
+      onArrive()
+    }
+    window.addEventListener('scrollend', arrive)
+    window.setTimeout(arrive, 1200) // browsers without `scrollend`, or when there is nothing to scroll
+    el.scrollIntoView({ behavior: reduced ? 'auto' : 'smooth', block: 'start' })
+  }
 }
 
 // --- Pieces ----------------------------------------------------------------------------------

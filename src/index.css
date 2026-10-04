@@ -141,6 +141,11 @@ body {
   font-family: var(--font-display);
   font-variant-numeric: normal;
 }
+/* While the landing is mounted, the page canvas uses its background: otherwise the browser's overscroll
+   (the rubber band past the top or bottom) shows the dashboard's dark color. */
+html:has(.landing), body:has(.landing) { background: #f9f8f6; }
+/* Anchors land below the sticky top bar. */
+html:has(.landing) { scroll-padding-top: 4rem; }
 .landing ::selection { background: rgb(194 86 42 / 0.2); }
 .landing :focus-visible { outline-color: var(--l-rust); }
 
@@ -170,6 +175,16 @@ body {
 /* Reveal on scroll. */
 .l-reveal { opacity: 0; transform: translateY(24px); transition: opacity 0.8s cubic-bezier(0.2, 0.8, 0.2, 1), transform 0.8s cubic-bezier(0.2, 0.8, 0.2, 1); }
 .l-reveal.is-in { opacity: 1; transform: none; }
+
+/* Arriving at a section from the top nav replays its reveal, and a rust bar sweeps across the top. */
+.l-arrive .l-reveal { animation: l-arrive 0.8s cubic-bezier(0.2, 0.8, 0.2, 1) both; }
+@keyframes l-arrive { from { opacity: 0; transform: translateY(24px); } to { opacity: 1; transform: none; } }
+.l-sweep { transform-origin: left; animation: l-sweep 0.9s cubic-bezier(0.65, 0, 0.35, 1) forwards; }
+@keyframes l-sweep {
+  0% { transform: scaleX(0); opacity: 1; }
+  60% { transform: scaleX(1); opacity: 1; }
+  100% { transform: scaleX(1); opacity: 0; }
+}
 
 /* Frame with a rotating color glow (like Antigravity's product cards). */
 .l-glow { position: relative; isolation: isolate; }
@@ -214,4 +229,5 @@ body {
   .l-wave,
   .l-caret, .l-float, .l-glow::before, .l-bubble, .l-typing span, .l-marquee { animation: none; }
   .l-reveal { opacity: 1; transform: none; transition: none; }
+  .l-arrive .l-reveal, .l-sweep { animation: none; }
 }
