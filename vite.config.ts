@@ -4,6 +4,6 @@ import tailwindcss from '@tailwindcss/vite'
 
 export default defineConfig({
   plugins: [react(), tailwindcss()],
-  // MapLibre 6 carga su propio worker; el optimizador de Vite lo rompe en modo dev.
+  // MapLibre 6 loads its own worker; Vite's dep optimizer breaks it in dev mode.
   optimizeDeps: { exclude: ['maplibre-gl'] },
 })

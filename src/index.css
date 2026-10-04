@@ -1,4 +1,4 @@
-@import url('https://fonts.googleapis.com/css2?family=Public+Sans:wght@400;500;600;700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Public+Sans:wght@400;500;600;700&family=Geist:wght@400;500;600;700&family=Geist+Mono:wght@400;500&display=swap');
 @import "tailwindcss";
 
 @theme {
@@ -15,6 +15,8 @@
   --color-prio-medium: #F5B83D;
   --color-prio-high: #F2675A;
   --font-sans: "Public Sans", system-ui, sans-serif;
+  --font-display: "Geist", system-ui, sans-serif;
+  --font-mono: "Geist Mono", ui-monospace, monospace;
 
   --shadow-float: 0 1px 0 0 rgb(255 255 255 / 0.04) inset, 0 12px 32px -8px rgb(0 0 0 / 0.6), 0 2px 6px -2px rgb(0 0 0 / 0.4);
 
@@ -47,7 +49,7 @@ body {
 
 * { scrollbar-width: thin; scrollbar-color: var(--color-line) transparent; }
 
-/* Superficie flotante sobre el mapa: translúcida, con desenfoque y sombra. */
+/* Floating surface over the map: translucent, with blur and shadow. */
 @utility glass {
   @apply rounded-xl border border-line/80 bg-panel/85 shadow-float backdrop-blur-md;
 }
@@ -78,7 +80,7 @@ body {
   @apply font-semibold text-ink decoration-accent/60 underline-offset-4 hover:text-accent hover:underline;
 }
 
-/* Controles del mapa con el mismo tono que los paneles. */
+/* Map controls in the same tone as the panels. */
 .maplibregl-ctrl-attrib.maplibregl-compact {
   background: color-mix(in srgb, var(--color-panel) 85%, transparent) !important;
   color: var(--color-ink-muted);
@@ -87,4 +89,94 @@ body {
 
 @media (prefers-reduced-motion: reduce) {
   * { transition: none !important; animation: none !important; }
+}
+
+/* ---------------------------------------------------------------------------
+   Landing page (/). Its own light theme; the dashboard keeps the dark one.
+   --------------------------------------------------------------------------- */
+.landing {
+  --l-bg: #f9f8f6;
+  --l-ink: #1e1e24;
+  --l-muted: #5f5f6b;
+  --l-line: #e4e1db;
+  --l-green: #0f7a4f;
+  --l-rust: #c2562a;
+  background: var(--l-bg);
+  color: var(--l-ink);
+  font-family: var(--font-display);
+  font-variant-numeric: normal;
+}
+.landing ::selection { background: rgb(194 86 42 / 0.2); }
+.landing :focus-visible { outline-color: var(--l-rust); }
+
+/* Background dot grid (like Base44). */
+.l-dots {
+  background-image: radial-gradient(rgb(30 30 36 / 0.09) 1px, transparent 1px);
+  background-size: 22px 22px;
+}
+
+.l-caret {
+  display: inline-block;
+  width: 0.06em;
+  height: 0.9em;
+  margin-left: 0.04em;
+  vertical-align: -0.08em;
+  background: linear-gradient(to bottom, var(--l-rust), #e8a33d);
+  animation: l-blink 1s steps(1) infinite;
+}
+@keyframes l-blink { 50% { opacity: 0; } }
+
+.l-float { animation: l-float 6s ease-in-out infinite; }
+@keyframes l-float {
+  0%, 100% { transform: translate(-50%, -50%) translateY(0); }
+  50% { transform: translate(-50%, -50%) translateY(-10px); }
+}
+
+/* Reveal on scroll. */
+.l-reveal { opacity: 0; transform: translateY(24px); transition: opacity 0.8s cubic-bezier(0.2, 0.8, 0.2, 1), transform 0.8s cubic-bezier(0.2, 0.8, 0.2, 1); }
+.l-reveal.is-in { opacity: 1; transform: none; }
+
+/* Frame with a rotating color glow (like Antigravity's product cards). */
+.l-glow { position: relative; isolation: isolate; }
+.l-glow::before {
+  content: "";
+  position: absolute;
+  inset: -1px;
+  z-index: -1;
+  border-radius: inherit;
+  background: conic-gradient(from var(--l-angle), #e8a33d, #c2562a, #0f7a4f, #6fbf73, #e8a33d);
+  animation: l-spin 8s linear infinite;
+}
+.l-glow::after {
+  content: "";
+  position: absolute;
+  inset: 12%;
+  z-index: -2;
+  border-radius: inherit;
+  background: inherit;
+  filter: blur(40px);
+  opacity: 0.5;
+}
+@property --l-angle { syntax: "<angle>"; initial-value: 0deg; inherits: false; }
+@keyframes l-spin { to { --l-angle: 360deg; } }
+
+.l-bubble { animation: l-pop 0.45s cubic-bezier(0.2, 0.8, 0.2, 1) both; }
+@keyframes l-pop { from { opacity: 0; transform: translateY(8px) scale(0.98); } to { opacity: 1; transform: none; } }
+
+.l-typing span { display: inline-block; width: 6px; height: 6px; border-radius: 9999px; background: currentColor; animation: l-dot 1.2s infinite ease-in-out; }
+.l-typing span:nth-child(2) { animation-delay: 0.15s; }
+.l-typing span:nth-child(3) { animation-delay: 0.3s; }
+@keyframes l-dot { 0%, 80%, 100% { opacity: 0.25; transform: translateY(0); } 40% { opacity: 1; transform: translateY(-3px); } }
+
+.l-marquee { animation: l-marquee 40s linear infinite; }
+@keyframes l-marquee { to { transform: translateX(-50%); } }
+
+/* Bars of the voice wave that is playing. */
+.l-wave { transform-origin: center; animation: l-wave 0.9s ease-in-out infinite alternate; }
+@keyframes l-wave { from { transform: scaleY(0.45); } to { transform: scaleY(1.15); } }
+
+@media (prefers-reduced-motion: reduce) {
+  .l-wave,
+  .l-caret, .l-float, .l-glow::before, .l-bubble, .l-typing span, .l-marquee { animation: none; }
+  .l-reveal { opacity: 1; transform: none; transition: none; }
 }

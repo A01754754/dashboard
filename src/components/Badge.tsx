@@ -2,7 +2,7 @@ import type { ReactNode } from 'react'
 
 export type Tone = 'neutral' | 'accent' | 'high' | 'medium' | 'low' | 'unknown'
 
-// Clases completas y estáticas para que Tailwind las detecte.
+// Full, static class names so Tailwind can detect them.
 const TONES: Record<Tone, string> = {
   neutral: 'border-line bg-panel-2 text-ink-muted',
   accent: 'border-accent/30 bg-accent/10 text-accent',

@@ -2,7 +2,7 @@ import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
 import { api } from './index'
 import type { AlertReview } from './types'
 
-// El documento permite consultar cada 5 s; no hace falta tiempo real.
+// The spec allows polling every 5 s; real time is not needed.
 const POLL_MS = 5000
 export const THREAT_CODE = 'coffee_leaf_rust'
 
@@ -30,7 +30,7 @@ export function useReviewAlert() {
   const qc = useQueryClient()
   return useMutation({
     mutationFn: ({ id, body }: { id: string; body: AlertReview }) => api.reviewAlert(id, body),
-    // Con éxito o con 409, recargar para mostrar el estado real del servidor.
+    // On success or on 409, refetch to show the server's real state.
     onSettled: () => {
       void qc.invalidateQueries({ queryKey: ['alerts'] })
       void qc.invalidateQueries({ queryKey: ['graph'] })

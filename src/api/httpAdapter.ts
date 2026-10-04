@@ -7,7 +7,7 @@ import type {
 
 const BASE_URL = (import.meta.env.VITE_API_URL as string | undefined) ?? 'http://localhost:8000/v1'
 
-// Sección 17: tres intentos de llamada antes del SMS. El backend no lo expone en la lista.
+// Section 17: three call attempts before the SMS. The backend does not expose this in the list.
 const FOLLOWUP_CALL_ATTEMPTS = 3
 
 type RequestOptions = { method?: string; body?: unknown; idempotencyKey?: string }
@@ -25,7 +25,7 @@ async function request<T>(path: string, opts: RequestOptions = {}): Promise<T> {
       body: opts.body === undefined ? undefined : JSON.stringify(opts.body),
     })
   } catch {
-    throw new ApiError(0, 'NETWORK_ERROR', 'No se pudo conectar con el servidor.', true)
+    throw new ApiError(0, 'NETWORK_ERROR', 'Could not connect to the server.', true)
   }
 
   if (!res.ok) {
@@ -55,8 +55,8 @@ const qs = (params: Record<string, string | undefined>) => {
 const page = <T>(items: T[]): Page<T> => ({ items, next_cursor: null })
 
 // ---------------------------------------------------------------------------
-// Formas que devuelve el backend (contracts/models.py). Las pantallas usan los
-// tipos de ./types; las funciones to* traducen sin que los componentes cambien.
+// Shapes returned by the backend (contracts/models.py). Screens use the types in
+// ./types; the to* functions translate between them so components do not change.
 // ---------------------------------------------------------------------------
 
 interface ApiAlert {
@@ -89,7 +89,7 @@ interface ApiFollowup {
   attempt_count: number
   case_summary: { symptoms: string[]; guidance_given: string | null }
   is_demo: boolean
-  // También trae `contact` con el teléfono (lo usa comunicaciones); aquí se descarta.
+  // It also includes `contact` with the phone (used by communications); dropped here.
 }
 
 interface ApiResolution {
@@ -128,13 +128,13 @@ interface ApiAssessment {
 }
 
 const DISPOSITION_TITLE: Record<ApiAssessment['disposition'], string> = {
-  ask_more: 'El asesor pidió más información',
-  advise: 'El asesor dio orientación',
-  refer: 'El asesor derivó a un agrónomo',
+  ask_more: 'The advisor asked for more information',
+  advise: 'The advisor gave guidance',
+  refer: 'The advisor referred to an agronomist',
 }
 
 function toAlert(a: ApiAlert): Alert {
-  // La entrega que importa es la del último intento de notificación.
+  // The delivery that matters is the one from the last notification attempt.
   const last = a.notifications.at(-1)
   return {
     id: a.alert_id,
@@ -160,9 +160,9 @@ function toAlert(a: ApiAlert): Alert {
 
 function caseSummary(s: ApiFollowup['case_summary']): string {
   const parts = []
-  if (s.symptoms.length) parts.push(`Síntomas: ${s.symptoms.join(', ')}`)
-  if (s.guidance_given) parts.push(`Orientación dada: ${s.guidance_given}`)
-  return parts.join(' · ') || 'Sin resumen del caso'
+  if (s.symptoms.length) parts.push(`Symptoms: ${s.symptoms.join(', ')}`)
+  if (s.guidance_given) parts.push(`Guidance given: ${s.guidance_given}`)
+  return parts.join(' · ') || 'No case summary'
 }
 
 function toFollowup(f: ApiFollowup, labels: Map<string, string>): FollowUp {
@@ -177,7 +177,7 @@ function toFollowup(f: ApiFollowup, labels: Map<string, string>): FollowUp {
     attempt_count: f.attempt_count,
     max_attempts: FOLLOWUP_CALL_ATTEMPTS,
     case_summary: caseSummary(f.case_summary),
-    // La respuesta del agricultor vive en el reporte del seguimiento, no en la lista.
+    // The farmer's answer lives in the follow-up report, not in the list.
     status_reported: null,
     actions_taken: null,
     is_demo: f.is_demo,
@@ -204,7 +204,7 @@ function toResolved(r: ApiResolution): ResolvedCase {
 
 const getGraph = (threatCode: string) => request<GraphResponse>(`/graph${qs({ threat_code: threatCode })}`)
 
-// La lista de seguimientos no trae el nombre de la parcela; se toma del grafo.
+// The follow-up list has no plot name; it is taken from the graph.
 async function plotLabels(): Promise<Map<string, string>> {
   try {
     const graph = await getGraph('coffee_leaf_rust')
@@ -219,8 +219,8 @@ async function getFollowupItems(): Promise<FollowUp[]> {
   return list.followups.map((f) => toFollowup(f, labels))
 }
 
-// No hay endpoint de timeline: se arma con reportes, evaluaciones del asesor, alertas, seguimientos y
-// resoluciones de la parcela.
+// There is no timeline endpoint: it is built from the plot's reports, advisor assessments, alerts,
+// follow-ups and resolutions.
 async function getTimeline(plotId: string): Promise<Page<TimelineEntry>> {
   const id = encodeURIComponent(plotId)
   const [graph, assessments, alerts, followups, resolutions] = await Promise.all([
@@ -240,7 +240,7 @@ async function getTimeline(plotId: string): Promise<Page<TimelineEntry>> {
       id: r.report_id,
       kind: 'report',
       occurred_at: r.received_at,
-      title: r.channel === 'voice' ? 'Reporte por llamada' : 'Reporte por SMS',
+      title: r.channel === 'voice' ? 'Report by call' : 'Report by SMS',
       detail: r.user_statement || r.symptoms.join(', ') || null,
       channel: r.channel,
     })),
@@ -260,7 +260,7 @@ async function getTimeline(plotId: string): Promise<Page<TimelineEntry>> {
       id: a.alert_id,
       kind: 'alert',
       occurred_at: a.approved_at ?? a.created_at,
-      title: `Alerta: ${ALERT_STATUS[a.status].label.toLowerCase()}`,
+      title: `Alert: ${ALERT_STATUS[a.status].label.toLowerCase()}`,
       detail: a.message,
       channel: 'operator',
     })),
@@ -268,7 +268,7 @@ async function getTimeline(plotId: string): Promise<Page<TimelineEntry>> {
       id: f.followup_id,
       kind: 'followup',
       occurred_at: f.due_at,
-      title: `Seguimiento: ${FOLLOWUP_STATUS[f.status].toLowerCase()}`,
+      title: `Follow-up: ${FOLLOWUP_STATUS[f.status].toLowerCase()}`,
       detail: caseSummary(f.case_summary),
       channel: f.channel,
     })),
@@ -276,7 +276,7 @@ async function getTimeline(plotId: string): Promise<Page<TimelineEntry>> {
       id: r.resolution_id,
       kind: 'resolution',
       occurred_at: r.resolved_at,
-      title: 'Caso resuelto',
+      title: 'Case resolved',
       detail: r.solution_statement,
     })),
   ]
@@ -299,8 +299,8 @@ export const httpAdapter: DashboardApi = {
   getResolvedCases: async (plotId) =>
     page((await request<{ resolutions: ApiResolution[] }>(`/resolved-cases${qs({ plot_id: plotId })}`))
       .resolutions.map(toResolved)),
-  // El backend no tiene /demo/reset; el botón se oculta en modo http (NavBar).
+  // The backend has no /demo/reset; the button is hidden in http mode (NavBar).
   resetDemo: async () => {
-    throw new ApiError(501, 'NOT_IMPLEMENTED', 'El reinicio de la demo no está disponible contra la API.')
+    throw new ApiError(501, 'NOT_IMPLEMENTED', 'Demo reset is not available against the API.')
   },
 }

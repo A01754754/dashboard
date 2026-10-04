@@ -2,8 +2,8 @@ import type {
   Alert, AlertReview, AlertStatus, FollowUp, GraphResponse, Page, ResolvedCase, TimelineEntry,
 } from './types'
 
-// Interfaz única que usan todas las pantallas. Hay dos implementaciones:
-// mockAdapter (fixtures en memoria) y httpAdapter (backend del integrante 3).
+// Single interface used by every screen. There are two implementations:
+// mockAdapter (in-memory fixtures) and httpAdapter (team member 3's backend).
 export interface DashboardApi {
   getGraph(threatCode: string): Promise<GraphResponse>
   getTimeline(plotId: string): Promise<Page<TimelineEntry>>

@@ -6,12 +6,12 @@ import 'maplibre-gl/dist/maplibre-gl.css'
 import type { GraphResponse } from '../api/types'
 import { PRIORITY, hasDirectCase } from '../lib/priority'
 
-// MapLibre 6 busca su worker junto a su propio archivo. En el build de producción Vite no lo copia
-// y el servidor devuelve index.html en su lugar (mapa negro). Con ?worker&url Vite lo empaqueta junto con
-// sus imports y aquí se le dice a MapLibre dónde quedó.
+// MapLibre 6 looks for its worker next to its own file. The production build does not copy it,
+// so the server returns index.html instead (black map). With ?worker&url Vite bundles it together with
+// its imports, and here we tell MapLibre where it ended up.
 setWorkerUrl(workerUrl)
 
-// Mapa base oscuro gratuito y sin API key (OpenFreeMap).
+// Free dark base map with no API key (OpenFreeMap).
 const MAP_STYLE = 'https://tiles.openfreemap.org/styles/dark'
 
 type Props = {
@@ -77,14 +77,14 @@ export function MapView({ graph, selectedId, onSelect }: Props) {
       attributionControl={{ compact: true }}
     >
       <Source id="edges" type="geojson" data={edges}>
-        {/* Solo similitud ambiental: punteada y gris. Nunca se dibuja como contagio. */}
+        {/* Environmental similarity only: dashed and gray. Never drawn as contagion. */}
         <Layer
           id="edges-similarity"
           type="line"
           filter={['==', ['get', 'exposure'], false]}
           paint={{ 'line-color': '#3E4A59', 'line-width': 1.2, 'line-dasharray': [2, 2] }}
         />
-        {/* Exposición a un caso fuente activo: sólida, opacidad según exposure_strength. */}
+        {/* Exposure to an active source case: solid, opacity from exposure_strength. */}
         <Layer
           id="edges-exposure"
           type="line"
@@ -98,7 +98,7 @@ export function MapView({ graph, selectedId, onSelect }: Props) {
       </Source>
 
       <Source id="nodes" type="geojson" data={nodes}>
-        {/* Halo difuso por prioridad: da profundidad y destaca las parcelas urgentes. */}
+        {/* Soft glow by priority: adds depth and highlights urgent plots. */}
         <Layer
           id="nodes-glow"
           type="circle"
@@ -115,7 +115,7 @@ export function MapView({ graph, selectedId, onSelect }: Props) {
             'circle-blur': 1,
           }}
         />
-        {/* Anillo claro = la parcela tiene un reporte directo (no solo exposición). */}
+        {/* Light ring = the plot has a direct report (not just exposure). */}
         <Layer
           id="nodes-direct"
           type="circle"
@@ -138,7 +138,7 @@ export function MapView({ graph, selectedId, onSelect }: Props) {
             'circle-stroke-width': ['case', ['get', 'selected'], 3, 2],
           }}
         />
-        {/* Etiqueta de texto además del color, por accesibilidad. */}
+        {/* Text label in addition to color, for accessibility. */}
         <Layer
           id="nodes-label"
           type="symbol"

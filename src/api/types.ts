@@ -1,5 +1,5 @@
-// Tipos copiados del contrato GET /v1/graph (INSTRUCTIONS.md, sección 10.6).
-// No cambiar nombres sin acuerdo con el integrante 3.
+// Types copied from the GET /v1/graph contract (INSTRUCTIONS.md, section 10.6).
+// Do not rename without agreement from team member 3.
 
 export type InspectionPriority = 'unknown' | 'low' | 'medium' | 'high'
 export type LocalCaseStatus = 'none' | 'reported' | 'suspected' | 'confirmed' | 'monitoring' | 'resolved'
@@ -50,10 +50,10 @@ export interface GraphResponse {
 }
 
 // ---------------------------------------------------------------------------
-// Contratos del dashboard. Las rutas están en INSTRUCTIONS.md (sección 10), pero
-// el JSON exacto de alertas, seguimientos, timeline y casos resueltos no está
-// definido. Estos tipos son una PROPUESTA basada en los modelos de la sección 9:
-// acordarlos con el integrante 3 antes de conectar.
+// Dashboard contracts. The routes are in INSTRUCTIONS.md (section 10), but the
+// exact JSON for alerts, follow-ups, timeline and resolved cases is not defined.
+// These types are a PROPOSAL based on the models in section 9: agree on them
+// with team member 3 before connecting.
 // ---------------------------------------------------------------------------
 
 export interface Page<T> {
@@ -85,7 +85,7 @@ export interface Alert {
   is_demo: boolean
 }
 
-// Cuerpo de POST /v1/alerts/{id}/review (sección 10.7).
+// Body of POST /v1/alerts/{id}/review (section 10.7).
 export interface AlertReview {
   decision: 'approve' | 'reject'
   expected_version: number
@@ -163,7 +163,7 @@ export interface ResolvedCase {
   is_demo: boolean
 }
 
-// Error uniforme (sección 8).
+// Uniform error (section 8).
 export interface ApiErrorBody {
   error: {
     code: string

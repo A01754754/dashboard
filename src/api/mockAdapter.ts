@@ -13,7 +13,7 @@ const fresh = (): State => ({
 let state = fresh()
 let offline = false
 
-// Controles solo para desarrollo y para grabar la demo.
+// Controls for development and for recording the demo only.
 export const mockControls = {
   setOffline: (value: boolean) => { offline = value },
   isOffline: () => offline,
@@ -21,7 +21,7 @@ export const mockControls = {
 
 async function respond<T>(fn: () => T, ms = 250): Promise<T> {
   await new Promise((r) => setTimeout(r, ms))
-  if (offline) throw new ApiError(0, 'NETWORK_ERROR', 'No se pudo conectar con el servidor.', true)
+  if (offline) throw new ApiError(0, 'NETWORK_ERROR', 'Could not connect to the server.', true)
   return structuredClone(fn())
 }
 
@@ -44,10 +44,10 @@ export const mockAdapter: DashboardApi = {
       const alert = state.alerts.find((a) => a.id === id)
       if (!alert) throw new ApiError(404, 'NOT_FOUND', 'La alerta no existe.')
       if (alert.status !== 'pending_review') {
-        throw new ApiError(409, 'ALERT_NOT_PENDING', 'Esta alerta ya fue revisada por otra persona.')
+        throw new ApiError(409, 'ALERT_NOT_PENDING', 'This alert was already reviewed by someone else.')
       }
       if (alert.version !== body.expected_version) {
-        throw new ApiError(409, 'VERSION_CONFLICT', 'La alerta cambió desde que la abriste. Revisa la versión actual.')
+        throw new ApiError(409, 'VERSION_CONFLICT', 'The alert changed since you opened it. Check the current version.')
       }
       alert.version += 1
       alert.review_reason = body.reason || null
@@ -57,7 +57,7 @@ export const mockAdapter: DashboardApi = {
         alert.status = 'rejected'
         return alert
       }
-      // approved -> queued; el envío avanza solo para que el polling lo muestre.
+      // approved -> queued; delivery advances on its own so polling shows it.
       alert.message = body.message
       alert.status = 'queued'
       alert.delivery_status = 'queued'

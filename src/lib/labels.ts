@@ -2,43 +2,43 @@ import type { AlertStatus, FollowUpStatus, NotificationStatus, StatusReported, V
 import type { Tone } from '../components/Badge'
 
 export const ALERT_STATUS: Record<AlertStatus, { label: string; tone: Tone }> = {
-  pending_review: { label: 'Por revisar', tone: 'medium' },
-  approved: { label: 'Aprobada', tone: 'accent' },
-  queued: { label: 'Aprobada', tone: 'accent' },
-  rejected: { label: 'Rechazada', tone: 'neutral' },
-  cancelled: { label: 'Cancelada', tone: 'neutral' },
+  pending_review: { label: 'Pending review', tone: 'medium' },
+  approved: { label: 'Approved', tone: 'accent' },
+  queued: { label: 'Approved', tone: 'accent' },
+  rejected: { label: 'Rejected', tone: 'neutral' },
+  cancelled: { label: 'Cancelled', tone: 'neutral' },
 }
 
-// "delivered" significa que el proveedor confirmó la entrega, no que el agricultor lo leyó.
+// "delivered" means the provider confirmed delivery, not that the farmer read it.
 export const DELIVERY: Record<NotificationStatus, { label: string; tone: Tone }> = {
-  queued: { label: 'En cola', tone: 'neutral' },
-  sending: { label: 'Enviando', tone: 'neutral' },
-  accepted: { label: 'Aceptado por el proveedor', tone: 'low' },
-  delivered: { label: 'Entregado (no implica leído)', tone: 'accent' },
-  failed: { label: 'Falló el envío', tone: 'high' },
-  unknown: { label: 'Estado incierto, por conciliar', tone: 'medium' },
-  cancelled: { label: 'Envío cancelado', tone: 'neutral' },
+  queued: { label: 'Queued', tone: 'neutral' },
+  sending: { label: 'Sending', tone: 'neutral' },
+  accepted: { label: 'Accepted by provider', tone: 'low' },
+  delivered: { label: 'Delivered (not necessarily read)', tone: 'accent' },
+  failed: { label: 'Delivery failed', tone: 'high' },
+  unknown: { label: 'Uncertain status, to reconcile', tone: 'medium' },
+  cancelled: { label: 'Delivery cancelled', tone: 'neutral' },
 }
 
 export const FOLLOWUP_STATUS: Record<FollowUpStatus, string> = {
-  scheduled: 'Programado',
-  contacting: 'En curso',
-  responded: 'Respondido',
-  no_response: 'Sin respuesta',
-  failed: 'Falló',
-  cancelled: 'Cancelado',
+  scheduled: 'Scheduled',
+  contacting: 'In progress',
+  responded: 'Answered',
+  no_response: 'No answer',
+  failed: 'Failed',
+  cancelled: 'Cancelled',
 }
 
 export const STATUS_REPORTED: Record<StatusReported, string> = {
-  worse: 'Empeoró',
-  same: 'Sigue igual',
-  improved: 'Mejoró',
-  resolved: 'Resuelto',
-  unknown: 'No sabe',
+  worse: 'Worse',
+  same: 'Same',
+  improved: 'Improved',
+  resolved: 'Resolved',
+  unknown: 'Unsure',
 }
 
 export const VERIFICATION: Record<Verification, { label: string; tone: Tone }> = {
-  verified: { label: 'Verificado por agrónomo', tone: 'accent' },
-  farmer_reported: { label: 'Reportado por el agricultor', tone: 'low' },
-  disputed: { label: 'En disputa', tone: 'medium' },
+  verified: { label: 'Verified by agronomist', tone: 'accent' },
+  farmer_reported: { label: 'Reported by farmer', tone: 'low' },
+  disputed: { label: 'Disputed', tone: 'medium' },
 }
